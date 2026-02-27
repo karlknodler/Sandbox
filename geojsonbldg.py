@@ -2,8 +2,6 @@ import math
 import sys
 from pathlib import Path
 from datetime import datetime
-import pywavefront
-import numpy as np
 import geohash2  # pip install geohash2
 
 from geojsonbuildingextrusion import (
@@ -11,6 +9,19 @@ from geojsonbuildingextrusion import (
     _extrude_footprint,
     export_building_pywavefront,
 )
+
+
+def get_latest_combined_obj(base_dir="assets/geo_buildings"):
+    base_path = Path(base_dir)
+    if not base_path.exists():
+        return None
+
+    run_folders = sorted(path for path in base_path.iterdir() if path.is_dir())
+    if not run_folders:
+        return None
+
+    combined_obj = run_folders[-1] / "combined.obj"
+    return combined_obj if combined_obj.exists() else None
 
 def load_extruded_geojson_buildings(lat, lon, km=1):
     """
