@@ -1,15 +1,16 @@
 from ursina import *
 from ursina.prefabs.first_person_controller import FirstPersonController
-from pathlib import Path
 import numpy as np
 import pywavefront
+
+from geojsonbldg import get_latest_combined_obj
 
 app = Ursina()
 
 # === CONFIG ===
 DESIRED_SCENE_SIZE = 1000
 GROUND_SCALE = DESIRED_SCENE_SIZE * 1.2
-PLAYER_START_Y = 5
+PLAYER_START_Y = 10  # keep spawn above ground while debugging floor collision issues
 PERLIN_REPEAT = 0.1
 WIREFRAME_COLOR = color.black
 
@@ -24,13 +25,9 @@ ground = Entity(
 )
 
 # === LOAD COMBINED OBJ ===
-ASSETS_DIR = Path("assets/geo_buildings")
-
-latest_run = sorted(ASSETS_DIR.iterdir())[-1]
-combined_obj = latest_run / "combined.obj"
-
+combined_obj = get_latest_combined_obj()
 if combined_obj is None:
-    print("No combined OBJ found in:", ASSETS_DIR)
+    print("No combined OBJ found in: assets/geo_buildings")
     exit()
 
 # Load vertices and faces using pywavefront
